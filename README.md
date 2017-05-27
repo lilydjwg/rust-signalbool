@@ -6,7 +6,7 @@ This crate doesn't create threads behind the scene.
 
 Here is a program that sleeps until it receives three `SIGINT` signals.
 
-```
+```rust
 extern crate signalbool;
 extern crate nix;
 
