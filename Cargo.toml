@@ -10,4 +10,4 @@ homepage = "https://github.com/lilydjwg/rust-signalbool"
 repository = "https://github.com/lilydjwg/rust-signalbool"
 
 [dependencies]
-nix = "*"
+nix = "0.8"
