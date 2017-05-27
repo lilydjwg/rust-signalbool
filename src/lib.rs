@@ -2,6 +2,9 @@
 //!
 //! This crate doesn't create threads behind the scene.
 //!
+//! [![Crates.io Version](https://img.shields.io/crates/v/signalbool.svg)](https://crates.io/crates/signalbool)
+//! [![GitHub stars](https://img.shields.io/github/stars/lilydjwg/signalbool.svg?style=social&label=Star)](https://github.com/lilydjwg/signalbool)
+//!
 //! # Example
 //!
 //! Here is a program that sleeps until it receives three `SIGINT` signals.

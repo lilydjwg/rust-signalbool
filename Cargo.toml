@@ -1,10 +1,10 @@
 [package]
 name = "signalbool"
-version = "0.1.0"
+version = "0.1.1"
 authors = ["lilydjwg <lilydjwg@gmail.com>"]
 license = "BSD-3-Clause"
 keywords = ["signal", "SIGINT"]
-description = "Simple signal handler for Rust projects"
+description = "A simple crate to catch signals and set a boolean flag for later use."
 documentation = "https://docs.rs/signalbool"
 homepage = "https://github.com/lilydjwg/rust-signalbool"
 repository = "https://github.com/lilydjwg/rust-signalbool"
