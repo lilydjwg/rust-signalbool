@@ -37,12 +37,12 @@
 
 extern crate nix;
 
+use std::io;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::os::raw::c_int;
 use std::mem::transmute;
 
-use nix::Result;
 use nix::sys::signal::*;
 
 pub use nix::sys::signal::Signal;
@@ -78,7 +78,7 @@ extern "C" fn os_handler(sig: c_int) {
 
 impl SignalBool {
   /// Register an array of signals to set the internal flag to true when received.
-  pub fn new(signals: &[Signal], flag: Flag) -> Result<Self> {
+  pub fn new(signals: &[Signal], flag: Flag) -> io::Result<Self> {
     let flags = match flag {
       Flag::Restart => SA_RESTART,
       Flag::Interrupt => SaFlags::empty(),
@@ -89,7 +89,9 @@ impl SignalBool {
 
     for signal in signals {
       unsafe {
-        sigaction(*signal, &sa)?;
+        if let Err(e) = sigaction(*signal, &sa) {
+          return Err(io::Error::from_raw_os_error(e.errno() as i32));
+        }
         SIGNALS[*signal as usize] = transmute(sb.clone());
       }
     }
