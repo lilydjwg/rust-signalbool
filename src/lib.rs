@@ -35,17 +35,15 @@
 //! }
 //! ```
 
-extern crate nix;
-
-use std::io;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
-use std::os::raw::c_int;
-use std::mem::transmute;
 
-use nix::sys::signal::*;
+#[cfg(not(windows))] mod unix;
+#[cfg(not(windows))] use unix as imp;
+#[cfg(windows)] mod windows;
+#[cfg(windows)] use windows as imp;
 
-pub use nix::sys::signal::Signal;
+pub use imp::Signal;
 
 /// A struct that catches specified signals and sets its internal flag to `true`.
 ///
@@ -60,45 +58,13 @@ pub struct SignalBool(Arc<AtomicBool>);
 /// See manpage [`signal(7)`](http://man7.org/linux/man-pages/man7/signal.7.html) for details.
 pub enum Flag {
   /// Blocking syscalls will be interrupted.
+  #[cfg(not(windows))]
   Interrupt,
   /// Use SA_RESTART so that syscalls don't get interrupted.
   Restart,
 }
 
-const SIGNUM: usize = 32;
-
-static mut SIGNALS: [usize; SIGNUM] = [0; SIGNUM];
-
-extern "C" fn os_handler(sig: c_int) {
-  let sb: Arc<AtomicBool> = unsafe {
-     transmute(SIGNALS[sig as usize])
-  };
-  sb.store(true, Ordering::Relaxed);
-}
-
 impl SignalBool {
-  /// Register an array of signals to set the internal flag to true when received.
-  pub fn new(signals: &[Signal], flag: Flag) -> io::Result<Self> {
-    let flags = match flag {
-      Flag::Restart => SA_RESTART,
-      Flag::Interrupt => SaFlags::empty(),
-    };
-    let handler = SigHandler::Handler(os_handler);
-    let sa = SigAction::new(handler, flags, SigSet::empty());
-    let sb = SignalBool(Arc::new(AtomicBool::new(false)));
-
-    for signal in signals {
-      unsafe {
-        if let Err(e) = sigaction(*signal, &sa) {
-          return Err(io::Error::from_raw_os_error(e.errno() as i32));
-        }
-        SIGNALS[*signal as usize] = transmute(sb.clone());
-      }
-    }
-
-    Ok(sb)
-  }
-
   /// Reset the internal flag to false.
   pub fn reset(&mut self) {
     self.0.store(false, Ordering::Relaxed);
