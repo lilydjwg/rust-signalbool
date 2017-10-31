@@ -6,6 +6,7 @@ use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
 use std::os::raw::c_int;
 
 use self::nix::sys::signal::*;
+use self::nix::Error;
 pub use self::nix::sys::signal::Signal;
 
 use ::Flag;
@@ -36,7 +37,10 @@ impl SignalBool {
       }
       unsafe {
         if let Err(e) = sigaction(*signal, &sa) {
-          return Err(io::Error::from_raw_os_error(e.errno() as i32));
+          match e {
+            Error::Sys(errno) => { return Err(io::Error::from_raw_os_error(errno as i32)); }
+            _ => unreachable!("should not reach")
+          }
         }
       }
       mask |= 1 << *signal as usize;
