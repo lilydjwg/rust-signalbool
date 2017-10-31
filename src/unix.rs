@@ -4,7 +4,7 @@ use std::io;
 use std::sync::Arc;
 use std::sync::atomic::{AtomicBool, Ordering};
 use std::os::raw::c_int;
-use std::mem::transmute;
+use std::mem::{transmute, forget};
 
 use self::nix::sys::signal::*;
 pub use self::nix::sys::signal::Signal;
@@ -21,6 +21,7 @@ extern "C" fn os_handler(sig: c_int) {
      transmute(SIGNALS[sig as usize])
   };
   sb.store(true, Ordering::Relaxed);
+  forget(sb);
 }
 
 impl SignalBool {
