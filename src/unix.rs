@@ -30,7 +30,7 @@ impl SignalBool {
     let mut mask = 0;
 
     for signal in signals {
-      if *signal as usize > size_of::<usize>() {
+      if *signal as usize >= size_of::<usize>() {
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput, "unsupported large signal"));
       }
