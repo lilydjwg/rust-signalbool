@@ -35,9 +35,6 @@
 //! }
 //! ```
 
-use std::sync::Arc;
-use std::sync::atomic::{AtomicBool, Ordering};
-
 #[cfg(not(windows))] mod unix;
 #[cfg(not(windows))] use unix as imp;
 #[cfg(windows)] mod windows;
@@ -48,8 +45,10 @@ pub use imp::Signal;
 /// A struct that catches specified signals and sets its internal flag to `true`.
 ///
 /// Note: any previously-registered signal handlers will be lost.
-#[derive(Clone)]
-pub struct SignalBool(Arc<AtomicBool>);
+#[cfg(windows)]
+pub struct SignalBool;
+#[cfg(not(windows))]
+pub struct SignalBool(usize);
 
 /// flag controlling the restarting behavior.
 ///
@@ -62,16 +61,4 @@ pub enum Flag {
   Interrupt,
   /// Use SA_RESTART so that syscalls don't get interrupted.
   Restart,
-}
-
-impl SignalBool {
-  /// Reset the internal flag to false.
-  pub fn reset(&mut self) {
-    self.0.store(false, Ordering::Relaxed);
-  }
-
-  /// Check whether we've caught a registered signal.
-  pub fn caught(&self) -> bool {
-    self.0.load(Ordering::Relaxed)
-  }
 }
