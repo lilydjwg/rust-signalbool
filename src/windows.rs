@@ -4,7 +4,7 @@ extern crate kernel32;
 use std::io;
 use std::sync::atomic::{AtomicBool, Ordering, ATOMIC_BOOL_INIT};
 
-use self::winapi::{BOOL, DWORD, TRUE, FALSE};
+use self::winapi::shared::minwindef::{BOOL, DWORD, TRUE, FALSE};
 use self::kernel32::SetConsoleCtrlHandler;
 
 use ::Flag;

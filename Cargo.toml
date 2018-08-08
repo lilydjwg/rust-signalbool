@@ -13,5 +13,5 @@ repository = "https://github.com/lilydjwg/rust-signalbool"
 nix = "0.11"
 
 [target.'cfg(windows)'.dependencies]
-winapi = "0.3"
+winapi = { version = "0.3", features = ["minwindef"] }
 kernel32-sys = "0.2"
