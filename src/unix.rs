@@ -23,7 +23,7 @@ impl SignalBool {
   /// registered with multiple `SignalBool`s will interfere with each other.
   pub fn new(signals: &[Signal], flag: Flag) -> io::Result<Self> {
     let flags = match flag {
-      Flag::Restart => SA_RESTART,
+      Flag::Restart => SaFlags::SA_RESTART,
       Flag::Interrupt => SaFlags::empty(),
     };
     let handler = SigHandler::Handler(os_handler);

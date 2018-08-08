@@ -10,8 +10,8 @@ homepage = "https://github.com/lilydjwg/rust-signalbool"
 repository = "https://github.com/lilydjwg/rust-signalbool"
 
 [target.'cfg(not(windows))'.dependencies]
-nix = "0.9"
+nix = "0.11"
 
 [target.'cfg(windows)'.dependencies]
-winapi = "0.2"
+winapi = "0.3"
 kernel32-sys = "0.2"
