@@ -2,7 +2,7 @@ extern crate nix;
 
 use std::io;
 use std::mem::size_of;
-use std::sync::atomic::{AtomicUsize, Ordering, ATOMIC_USIZE_INIT};
+use std::sync::atomic::{AtomicUsize, Ordering};
 use std::os::raw::c_int;
 
 use self::nix::sys::signal::*;
@@ -12,7 +12,7 @@ pub use self::nix::sys::signal::Signal;
 use ::Flag;
 use ::SignalBool;
 
-static SIGNALS: AtomicUsize = ATOMIC_USIZE_INIT;
+static SIGNALS: AtomicUsize = AtomicUsize::new(0);
 
 extern "C" fn os_handler(sig: c_int) {
   SIGNALS.fetch_or(1 << sig, Ordering::Relaxed);
