@@ -36,11 +36,11 @@
 //! ```
 
 #[cfg(not(windows))] mod unix;
-#[cfg(not(windows))] use unix as imp;
+#[cfg(not(windows))] use crate::unix as imp;
 #[cfg(windows)] mod windows;
-#[cfg(windows)] use windows as imp;
+#[cfg(windows)] use crate::windows as imp;
 
-pub use imp::Signal;
+pub use crate::imp::Signal;
 
 /// A struct that catches specified signals and sets its internal flag to `true`.
 ///

@@ -2,20 +2,20 @@ extern crate winapi;
 extern crate kernel32;
 
 use std::io;
-use std::sync::atomic::{AtomicBool, Ordering, ATOMIC_BOOL_INIT};
+use std::sync::atomic::{AtomicBool, Ordering};
 
 use self::winapi::shared::minwindef::{BOOL, DWORD, TRUE, FALSE};
 use self::kernel32::SetConsoleCtrlHandler;
 
-use ::Flag;
-use ::SignalBool;
+use crate::Flag;
+use crate::SignalBool;
 
 #[derive(PartialEq)]
 pub enum Signal {
   SIGINT,
 }
 
-static SIGNAL: AtomicBool = ATOMIC_BOOL_INIT;
+static SIGNAL: AtomicBool = AtomicBool::new(false);
 
 extern "system" fn os_handler(_: DWORD) -> BOOL {
   SIGNAL.store(true, Ordering::Relaxed);
