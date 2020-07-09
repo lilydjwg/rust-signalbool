@@ -1,13 +1,11 @@
-extern crate nix;
-
 use std::io;
 use std::mem::size_of;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::os::raw::c_int;
 
-use self::nix::sys::signal::*;
-use self::nix::Error;
-pub use self::nix::sys::signal::Signal;
+use nix::sys::signal::*;
+use nix::Error;
+pub use nix::sys::signal::Signal;
 
 use crate::Flag;
 use crate::SignalBool;

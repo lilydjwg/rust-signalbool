@@ -1,11 +1,8 @@
-extern crate winapi;
-extern crate kernel32;
-
 use std::io;
 use std::sync::atomic::{AtomicBool, Ordering};
 
-use self::winapi::shared::minwindef::{BOOL, DWORD, TRUE, FALSE};
-use self::kernel32::SetConsoleCtrlHandler;
+use winapi::shared::minwindef::{BOOL, DWORD, TRUE, FALSE};
+use winapi::um::consoleapi::SetConsoleCtrlHandler;
 
 use crate::Flag;
 use crate::SignalBool;
