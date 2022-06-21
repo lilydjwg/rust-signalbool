@@ -7,7 +7,7 @@ use winapi::um::consoleapi::SetConsoleCtrlHandler;
 use crate::Flag;
 use crate::SignalBool;
 
-#[derive(PartialEq)]
+#[derive(PartialEq, Eq)]
 pub enum Signal {
   SIGINT,
 }

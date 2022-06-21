@@ -1,11 +1,9 @@
 use std::io;
-use std::mem::size_of;
 use std::sync::atomic::{AtomicUsize, Ordering};
 use std::os::raw::c_int;
 
 use nix::sys::signal::*;
-use nix::Error;
-pub use nix::sys::signal::Signal;
+pub use nix::sys::signal::{Signal, sigaction};
 
 use crate::Flag;
 use crate::SignalBool;
@@ -29,16 +27,13 @@ impl SignalBool {
     let mut mask = 0;
 
     for signal in signals {
-      if *signal as usize >= 8 * size_of::<usize>() {
+      if *signal as u32 >= usize::BITS {
         return Err(io::Error::new(
             io::ErrorKind::InvalidInput, "unsupported large signal"));
       }
       unsafe {
-        if let Err(e) = sigaction(*signal, &sa) {
-          match e {
-            Error::Sys(errno) => { return Err(io::Error::from_raw_os_error(errno as i32)); }
-            _ => unreachable!("should not reach")
-          }
+        if let Err(errno) = sigaction(*signal, &sa) {
+          return Err(io::Error::from_raw_os_error(errno as i32));
         }
       }
       mask |= 1 << *signal as usize;
